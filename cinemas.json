@@ -1,0 +1,12 @@
+{
+    "cinemas":[
+        {
+    "id": "c1a8b3d9-4e2f-4c7b-9a6d-3b5f8e2a1c4d",
+    "name": "КиноМакс Плаза",
+        "totalHalls": 12,
+        "hasIMAX": true,
+        "openingHours": ["10:00-23:30", "10:00-02:00", "10:00-23:30"],
+        "openingDate": "19/12/2019"
+        }
+    ]
+}
