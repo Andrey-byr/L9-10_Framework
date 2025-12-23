@@ -1,0 +1,121 @@
+const Application = require('./framework/Application');
+const bodyParser = require('./middleware/bodyParser');
+const {
+    getEmployees,
+    getEmployeeById,
+    createEmployee,
+    updateEmployee,
+    patchEmployee,
+    deleteEmployee
+} = require('./routes/employees');
+
+const {
+    getSpectacles,
+    getSpectacleById,
+    createSpectacle,
+    updateSpectacle,
+    patchSpectacle,
+    deleteSpectacle
+} = require('./routes/spectacles');
+
+const {
+    getFilms,
+    getFilmById,
+    createFilm,
+    updateFilm,
+    patchFilm,
+    deleteFilm
+} = require('./routes/films');
+
+const {
+    getCinemas,
+    getCinemaById,
+    createCinema,
+    updateCinema,
+    patchCinema,
+    deleteCinema
+} = require('./routes/cinemas');
+
+const {
+    getStreamers,
+    getStreamerByUsername,
+    createStreamer,
+    updateStreamer,
+    patchStreamer,
+    deleteStreamer
+} = require('./routes/streamers');
+
+const {
+    getStreams,
+    getStreamById,
+    createStream,
+    updateStream,
+    patchStream,
+    deleteStream
+} = require('./routes/streams');
+
+const app = new Application();
+
+app.use(bodyParser);
+
+app.get('/employees', getEmployees);
+app.get('/employees/:id', getEmployeeById);
+app.post('/employees', createEmployee);
+app.put('/employees/:id', updateEmployee);
+app.patch('/employees/:id', patchEmployee);
+app.delete('/employees/:id', deleteEmployee);
+
+app.get('/spectacles', getSpectacles);
+app.get('/spectacles/:id', getSpectacleById);
+app.post('/spectacles', createSpectacle);
+app.put('/spectacles/:id', updateSpectacle);
+app.patch('/spectacles/:id', patchSpectacle);
+app.delete('/spectacles/:id', deleteSpectacle);
+
+app.get('/films', getFilms);
+app.get('/films/:id', getFilmById);
+app.post('/films', createFilm);
+app.put('/films/:id', updateFilm);
+app.patch('/films/:id', patchFilm);
+app.delete('/films/:id', deleteFilm);
+
+app.get('/cinemas', getCinemas);
+app.get('/cinemas/:id', getCinemaById);
+app.post('/cinemas', createCinema);
+app.put('/cinemas/:id', updateCinema);
+app.patch('/cinemas/:id', patchCinema);
+app.delete('/cinemas/:id', deleteCinema);
+
+app.get('/streamers', getStreamers);
+app.get('/streamers/:username', getStreamerByUsername);
+app.post('/streamers', createStreamer);
+app.put('/streamers/:username', updateStreamer);
+app.patch('/streamers/:username', patchStreamer);
+app.delete('/streamers/:username', deleteStreamer);
+
+app.get('/streams', getStreams);
+app.get('/streams/:id', getStreamById);
+app.post('/streams', createStream);
+app.put('/streams/:id', updateStream);
+app.patch('/streams/:id', patchStream);
+app.delete('/streams/:id', deleteStream);
+
+app.get('/', (req, res) => {
+    res.json({
+        message: "Welcome to the Framework API!",
+        availableEndpoints: [
+            "/employees",
+            "/spectacles",
+            "/films",
+            "/cinemas",
+            "/streamers",
+            "/streams"
+        ]
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}`);
+   
+});
