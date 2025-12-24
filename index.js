@@ -7,7 +7,7 @@ const {
     updateEmployee,
     patchEmployee,
     deleteEmployee
-} = require('./routes/employees');
+} = require('./controller/employees');
 
 const {
     getSpectacles,
@@ -16,7 +16,7 @@ const {
     updateSpectacle,
     patchSpectacle,
     deleteSpectacle
-} = require('./routes/spectacles');
+} = require('./controller/spectacles');
 
 const {
     getFilms,
@@ -25,7 +25,7 @@ const {
     updateFilm,
     patchFilm,
     deleteFilm
-} = require('./routes/films');
+} = require('./controller/films');
 
 const {
     getCinemas,
@@ -34,7 +34,7 @@ const {
     updateCinema,
     patchCinema,
     deleteCinema
-} = require('./routes/cinemas');
+} = require('./controller/cinemas');
 
 const {
     getStreamers,
@@ -43,7 +43,7 @@ const {
     updateStreamer,
     patchStreamer,
     deleteStreamer
-} = require('./routes/streamers');
+} = require('./controller/streamers');
 
 const {
     getStreams,
@@ -52,7 +52,7 @@ const {
     updateStream,
     patchStream,
     deleteStream
-} = require('./routes/streams');
+} = require('./controller/streams');
 
 const app = new Application();
 
