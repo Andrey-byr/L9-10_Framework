@@ -2,9 +2,9 @@
   "name": "l910-framework",
   "version": "1.0.0",
   "main": "index.js",
+  "description": "Custom Node.js Framework",
   "scripts": {
-    "start": "node index.js",
-    "dev":"nodemon index.js"
+    "start": "nodemon index.js"
   },
   "dependencies": {
     "nodemon": "^3.1.11"

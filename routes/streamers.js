@@ -13,24 +13,7 @@ async function getStreamers(req, res) {
 async function getStreamerById(req, res) {
     try {
         const data = await manager.readData();
-        const streamer = (data.streamer || []).find(s => s.username === req.params.username);
-        
-        if (streamer) {
-            res.json(streamer);
-        } else {
-            res.status(404).json({ error: 'Streamer not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}
-
-async function getStreamerByUsername(req, res) {
-    try {
-        const data = await manager.readData();
-        const streamer = (data.streamer || []).find(s => 
-            s.username.toLowerCase() === req.params.username.toLowerCase()
-        );
+        const streamer = (data.streamer || []).find(s => s.id === req.params.id);
         
         if (streamer) {
             res.json(streamer);
@@ -47,23 +30,8 @@ async function createStreamer(req, res) {
         const data = await manager.readData();
         
         const newStreamer = req.body && Object.keys(req.body).length > 0 
-            ? { ...req.body }
-            : {
-                username: `Streamer${Math.floor(Math.random() * 10000)}`,
-                category: ['Just Chatting', 'Gaming', 'Music', 'Art', 'IRL'][Math.floor(Math.random() * 5)],
-                followers: Math.floor(Math.random() * 1000000),
-                isLive: Math.random() > 0.5,
-                channelCreated: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
-                tags: this._randomArray(['RU', 'EN', 'Gaming', 'Chat', 'Music', 'Art', 'Funny'])
-            };
-        
-        const existingStreamer = (data.streamer || []).find(s => 
-            s.username === newStreamer.username
-        );
-        
-        if (existingStreamer) {
-            return res.status(400).json({ error: 'Streamer with this username already exists' });
-        }
+            ? { id: manager.generateId(), ...req.body }
+            : manager.generateRandomData('streamer');
         
         data.streamer = data.streamer || [];
         data.streamer.push(newStreamer);
@@ -78,7 +46,7 @@ async function createStreamer(req, res) {
 async function updateStreamer(req, res) {
     try {
         const data = await manager.readData();
-        const index = (data.streamer || []).findIndex(s => s.username === req.params.username);
+        const index = (data.streamer || []).findIndex(s => s.id === req.params.id);
         
         if (index === -1) {
             return res.status(404).json({ error: 'Streamer not found' });
@@ -86,25 +54,9 @@ async function updateStreamer(req, res) {
         
         const updatedData = req.body && Object.keys(req.body).length > 0
             ? req.body
-            : {
-                username: `UpdatedStreamer${Math.floor(Math.random() * 10000)}`,
-                category: ['Just Chatting', 'Gaming', 'Music', 'Art', 'IRL'][Math.floor(Math.random() * 5)],
-                followers: Math.floor(Math.random() * 1000000),
-                isLive: Math.random() > 0.5,
-                channelCreated: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
-                tags: this._randomArray(['RU', 'EN', 'Gaming', 'Chat', 'Music', 'Art', 'Funny'])
-            };
+            : manager.generateRandomData('streamer');
         
-        if (updatedData.username && updatedData.username !== data.streamer[index].username) {
-            const usernameExists = (data.streamer || []).some((s, i) => 
-                i !== index && s.username === updatedData.username
-            );
-            
-            if (usernameExists) {
-                return res.status(400).json({ error: 'Username already taken' });
-            }
-        }
-        
+        delete updatedData.id;
         data.streamer[index] = { ...data.streamer[index], ...updatedData };
         
         await manager.writeData(data);
@@ -117,35 +69,23 @@ async function updateStreamer(req, res) {
 async function patchStreamer(req, res) {
     try {
         const data = await manager.readData();
-        const index = (data.streamer || []).findIndex(s => s.username === req.params.username);
+        const index = (data.streamer || []).findIndex(s => s.id === req.params.id);
         
         if (index === -1) {
             return res.status(404).json({ error: 'Streamer not found' });
         }
         
         const patchData = req.body || {};
+        delete patchData.id;
         
-        const originalStreamer = data.streamer[index];
+        const original = data.streamer[index];
         
+        // Логика по аналогии с изменением года: прибавляем случайное число к подписчикам
         if (patchData.followers && typeof patchData.followers === 'number') {
-            patchData.followers = originalStreamer.followers + Math.floor(Math.random() * 1000);
+            patchData.followers = original.followers + Math.floor(Math.random() * 100);
         }
         
-        if (typeof patchData.isLive === 'boolean') {
-            patchData.isLive = !originalStreamer.isLive;
-        }
-        
-        if (patchData.username && patchData.username !== originalStreamer.username) {
-            const usernameExists = (data.streamer || []).some((s, i) => 
-                i !== index && s.username === patchData.username
-            );
-            
-            if (usernameExists) {
-                return res.status(400).json({ error: 'Username already taken' });
-            }
-        }
-        
-        data.streamer[index] = { ...originalStreamer, ...patchData };
+        data.streamer[index] = { ...original, ...patchData };
         
         await manager.writeData(data);
         res.json(data.streamer[index]);
@@ -159,7 +99,7 @@ async function deleteStreamer(req, res) {
         const data = await manager.readData();
         const initialLength = (data.streamer || []).length;
         
-        data.streamer = (data.streamer || []).filter(s => s.username !== req.params.username);
+        data.streamer = (data.streamer || []).filter(s => s.id !== req.params.id);
         
         if (data.streamer.length === initialLength) {
             return res.status(404).json({ error: 'Streamer not found' });
@@ -172,18 +112,9 @@ async function deleteStreamer(req, res) {
     }
 }
 
-function _randomArray(options) {
-    const count = Math.floor(Math.random() * 3) + 1;
-    const shuffled = [...options].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-}
-
-module.exports._randomArray = _randomArray;
-
 module.exports = {
     getStreamers,
     getStreamerById,
-    getStreamerByUsername,
     createStreamer,
     updateStreamer,
     patchStreamer,

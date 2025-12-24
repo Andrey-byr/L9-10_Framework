@@ -1,5 +1,5 @@
 const Application = require('./framework/Application');
-const bodyParser = require('./middleware/bodyParser');
+const bodyParser = require('./framework/middleware/bodyParser');
 const {
     getEmployees,
     getEmployeeById,
@@ -38,7 +38,7 @@ const {
 
 const {
     getStreamers,
-    getStreamerByUsername,
+    getStreamerById,
     createStreamer,
     updateStreamer,
     patchStreamer,
@@ -87,11 +87,11 @@ app.patch('/cinemas/:id', patchCinema);
 app.delete('/cinemas/:id', deleteCinema);
 
 app.get('/streamers', getStreamers);
-app.get('/streamers/:username', getStreamerByUsername);
+app.get('/streamers/:id', getStreamerById);
 app.post('/streamers', createStreamer);
-app.put('/streamers/:username', updateStreamer);
-app.patch('/streamers/:username', patchStreamer);
-app.delete('/streamers/:username', deleteStreamer);
+app.put('/streamers/:id', updateStreamer);
+app.patch('/streamers/:id', patchStreamer);
+app.delete('/streamers/:id', deleteStreamer);
 
 app.get('/streams', getStreams);
 app.get('/streams/:id', getStreamById);

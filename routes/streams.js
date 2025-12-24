@@ -10,31 +10,13 @@ async function getStreams(req, res) {
     }
 }
 
-async function getStreamByTitle(req, res) {
-    try {
-        const data = await manager.readData();
-        const stream = (data.stream || []).find(s => 
-            s.title.toLowerCase().includes(req.params.title.toLowerCase())
-        );
-        
-        if (stream) {
-            res.json(stream);
-        } else {
-            res.status(404).json({ error: 'Stream not found' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-}
-
 async function getStreamById(req, res) {
     try {
         const data = await manager.readData();
-        const streams = data.stream || [];
-        const index = parseInt(req.params.id);
+        const stream = (data.stream || []).find(s => s.id === req.params.id);
         
-        if (index >= 0 && index < streams.length) {
-            res.json(streams[index]);
+        if (stream) {
+            res.json(stream);
         } else {
             res.status(404).json({ error: 'Stream not found' });
         }
@@ -48,14 +30,8 @@ async function createStream(req, res) {
         const data = await manager.readData();
         
         const newStream = req.body && Object.keys(req.body).length > 0 
-            ? { ...req.body }
-            : {
-                title: `Stream ${Math.floor(Math.random() * 1000)}`,
-                viewers: Math.floor(Math.random() * 10000),
-                moderationEnabled: Math.random() > 0.5,
-                startedAt: new Date().toISOString(),
-                moderators: this._randomArray(['ModAlex', 'ModKate', 'ModJohn', 'ModAnna', 'ModMike'])
-            };
+            ? { id: manager.generateId(), ...req.body }
+            : manager.generateRandomData('stream');
         
         data.stream = data.stream || [];
         data.stream.push(newStream);
@@ -70,22 +46,17 @@ async function createStream(req, res) {
 async function updateStream(req, res) {
     try {
         const data = await manager.readData();
-        const index = parseInt(req.params.id);
+        const index = (data.stream || []).findIndex(s => s.id === req.params.id);
         
-        if (index < 0 || index >= (data.stream || []).length) {
+        if (index === -1) {
             return res.status(404).json({ error: 'Stream not found' });
         }
         
         const updatedData = req.body && Object.keys(req.body).length > 0
             ? req.body
-            : {
-                title: `Updated Stream ${Math.floor(Math.random() * 1000)}`,
-                viewers: Math.floor(Math.random() * 10000),
-                moderationEnabled: Math.random() > 0.5,
-                startedAt: new Date().toISOString(),
-                moderators: this._randomArray(['ModAlex', 'ModKate', 'ModJohn', 'ModAnna', 'ModMike'])
-            };
+            : manager.generateRandomData('stream');
         
+        delete updatedData.id;
         data.stream[index] = { ...data.stream[index], ...updatedData };
         
         await manager.writeData(data);
@@ -98,34 +69,22 @@ async function updateStream(req, res) {
 async function patchStream(req, res) {
     try {
         const data = await manager.readData();
-        const index = parseInt(req.params.id);
+        const index = (data.stream || []).findIndex(s => s.id === req.params.id);
         
-        if (index < 0 || index >= (data.stream || []).length) {
+        if (index === -1) {
             return res.status(404).json({ error: 'Stream not found' });
         }
         
         const patchData = req.body || {};
+        delete patchData.id;
         
-        const originalStream = data.stream[index];
+        const original = data.stream[index];
         
         if (patchData.viewers && typeof patchData.viewers === 'number') {
-            patchData.viewers = originalStream.viewers + Math.floor(Math.random() * 500);
+            patchData.viewers = original.viewers + Math.floor(Math.random() * 50);
         }
         
-        if (typeof patchData.moderationEnabled === 'boolean') {
-            patchData.moderationEnabled = !originalStream.moderationEnabled;
-        }
-        
-        if (patchData.moderators && Array.isArray(patchData.moderators)) {
-            const newModerators = ['ModAlex', 'ModKate', 'ModJohn', 'ModAnna', 'ModMike'];
-            const randomMod = newModerators[Math.floor(Math.random() * newModerators.length)];
-            
-            if (!patchData.moderators.includes(randomMod)) {
-                patchData.moderators.push(randomMod);
-            }
-        }
-        
-        data.stream[index] = { ...originalStream, ...patchData };
+        data.stream[index] = { ...original, ...patchData };
         
         await manager.writeData(data);
         res.json(data.stream[index]);
@@ -137,13 +96,13 @@ async function patchStream(req, res) {
 async function deleteStream(req, res) {
     try {
         const data = await manager.readData();
-        const index = parseInt(req.params.id);
+        const initialLength = (data.stream || []).length;
         
-        if (index < 0 || index >= (data.stream || []).length) {
+        data.stream = (data.stream || []).filter(s => s.id !== req.params.id);
+        
+        if (data.stream.length === initialLength) {
             return res.status(404).json({ error: 'Stream not found' });
         }
-        
-        data.stream.splice(index, 1);
         
         await manager.writeData(data);
         res.status(204).end();
@@ -152,17 +111,8 @@ async function deleteStream(req, res) {
     }
 }
 
-function _randomArray(options) {
-    const count = Math.floor(Math.random() * 3) + 1;
-    const shuffled = [...options].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-}
-
-module.exports._randomArray = _randomArray;
-
 module.exports = {
     getStreams,
-    getStreamByTitle,
     getStreamById,
     createStream,
     updateStream,

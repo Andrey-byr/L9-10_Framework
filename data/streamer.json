@@ -1,12 +1,29 @@
 {
-    "streamer":[
-        {
-        "username": "NightGamer",
-        "category": "Just Chatting",
-        "followers": 128450,
-        "isLive": true,
-        "channelCreated": "2019-06-14T00:00:00Z",
-        "tags": ["RU", "Gaming", "Chat"]
-        }
-    ]
+  "streamer": [
+    {
+      "id": "8199373d-ac36-4f86-8373-0b4b604ac550",
+      "username": "Streamer3975",
+      "category": "Just Chatting",
+      "followers": 279736,
+      "isLive": false,
+      "channelCreated": "2025-11-03T04:35:01.329Z",
+      "tags": [
+        "RU",
+        "Chat",
+        "EN"
+      ]
+    },
+    {
+      "id": "80b11431-f25a-4ca7-9787-981384a6a0aa",
+      "username": "Streamer1086",
+      "category": "Art",
+      "followers": 601596,
+      "isLive": false,
+      "channelCreated": "2025-10-09T21:23:56.553Z",
+      "tags": [
+        "Chat",
+        "Art"
+      ]
+    }
+  ]
 }

@@ -37,10 +37,19 @@ class DataManager {
         });
     }
 
-    generateRandomData(entityType) {
+    _generateUniqueId(existingData = []) {
+        let newId;
+        const existingIds = new Set(existingData.map(item => item.id));
+        do {
+            newId = this.generateId();
+        } while (existingIds.has(newId));
+        return newId;
+    }
+
+    generateRandomData(entityType, currentItems = []) {
         const generators = {
             employees: () => ({
-                id: this.generateId(),
+                id: this._generateUniqueId(currentItems),
                 fullName: `Сотрудник ${Math.floor(Math.random() * 1000)}`,
                 age: Math.floor(Math.random() * 50) + 20,
                 isFullTime: Math.random() > 0.5,
@@ -48,7 +57,7 @@ class DataManager {
                 hireDate: new Date(Date.now() - Math.random() * 10000000000).toLocaleDateString('ru-RU')
             }),
             spectacles: () => ({
-                id: this.generateId(),
+                id: this._generateUniqueId(currentItems),
                 title: `Спектакль ${Math.floor(Math.random() * 1000)}`,
                 year: 1600 + Math.floor(Math.random() * 400),
                 isPremiere: Math.random() > 0.5,
@@ -56,7 +65,7 @@ class DataManager {
                 firstPerformanceDate: new Date(Date.now() + Math.random() * 10000000000).toLocaleString('ru-RU')
             }),
             films: () => ({
-                id: this.generateId(),
+                id: this._generateUniqueId(currentItems),
                 title: `Фильм ${Math.floor(Math.random() * 1000)}`,
                 duration: Math.floor(Math.random() * 180) + 60,
                 is3D: Math.random() > 0.5,
@@ -64,7 +73,7 @@ class DataManager {
                 releaseDate: new Date(Date.now() - Math.random() * 10000000000).toLocaleDateString('ru-RU')
             }),
             cinemas: () => ({
-                id: this.generateId(),
+                id: this._generateUniqueId(currentItems),
                 name: `Кинотеатр ${Math.floor(Math.random() * 1000)}`,
                 totalHalls: Math.floor(Math.random() * 20) + 1,
                 hasIMAX: Math.random() > 0.5,
@@ -72,6 +81,7 @@ class DataManager {
                 openingDate: new Date(Date.now() - Math.random() * 10000000000).toLocaleDateString('ru-RU')
             }),
             streamer: () => ({
+                id: this._generateUniqueId(currentItems),
                 username: `Streamer${Math.floor(Math.random() * 10000)}`,
                 category: ['Just Chatting', 'Gaming', 'Music', 'Art', 'IRL'][Math.floor(Math.random() * 5)],
                 followers: Math.floor(Math.random() * 1000000),
@@ -80,6 +90,7 @@ class DataManager {
                 tags: this._randomArray(['RU', 'EN', 'Gaming', 'Chat', 'Music', 'Art', 'Funny'])
             }),
             stream: () => ({
+                id: this._generateUniqueId(currentItems), 
                 title: `Stream ${Math.floor(Math.random() * 1000)}`,
                 viewers: Math.floor(Math.random() * 10000),
                 moderationEnabled: Math.random() > 0.5,

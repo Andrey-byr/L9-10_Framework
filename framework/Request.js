@@ -27,6 +27,14 @@ class Request {
         }
     }
 
+    on(event, callback) {
+        return this.req.on(event, callback);
+    }
+
+    pipe(dest) {
+        return this.req.pipe(dest);
+    }
+
     set params(params) {
         this._params = params;
     }
