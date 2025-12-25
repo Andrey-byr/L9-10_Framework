@@ -81,18 +81,17 @@ class Router {
         return null;
     }
 
-    async handle(req, res) {
-        const request = new Request(req);
+    async handle(req, res, existingRequest = null) {
+        const request = existingRequest ?? new Request(req);
         const response = new Response(res);
         
         try {
             for (const middleware of this.middlewares) {
                 await new Promise((resolve, reject) => {
-                    const next = (err) => {
+                    middleware(request, response, (err) => {
                         if (err) reject(err);
                         else resolve();
-                    };
-                    middleware(request, response, next);
+                    });
                 });
             }
             

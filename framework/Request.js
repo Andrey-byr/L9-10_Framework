@@ -23,7 +23,7 @@ class Request {
                 if (key) {
                     this._query[decodeURIComponent(key)] = value ? decodeURIComponent(value) : '';
                 }
-            });
+            }); 
         }
     }
 

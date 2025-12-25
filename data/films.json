@@ -1,12 +1,26 @@
 {
-   "films": [{
-    "id": "f7d3e9a1-4b5c-4d2e-a8f9-3c6b1a2d4e7f",
-    "title": "Космическая одиссея 3000",
-    "duration": 148,
-    "is3D": true,
-    "genres": ["фантастика", "приключения", "драма"],
-    "releaseDate": "04/11/2024"
-   }
-
-    ]
+  "films": [
+    {
+      "id": "f7d3e9a1-4b5c-4d2e-a8f9-3c6b1a2d4e7f",
+      "title": "Фильм 524",
+      "duration": 210,
+      "is3D": true,
+      "genres": [
+        "боевик",
+        "комедия",
+        "драма"
+      ],
+      "releaseDate": "10.10.2025"
+    },
+    {
+      "id": "89ad162d-0585-494f-8f4a-7895b0ddaea8",
+      "title": "Фильм 20",
+      "duration": 84,
+      "is3D": false,
+      "genres": [
+        "фантастика"
+      ],
+      "releaseDate": "14.12.2025"
+    }
+  ]
 }

@@ -37,20 +37,23 @@
 - `openingDate` (string) - дата открытия
 
 ### 5. Стримеры (streamers) - Twitch-like
-- `username` (string) - уникальное имя пользователя
-- `category` (string) - категория стрима
-- `followers` (number) - количество подписчиков
-- `isLive` (boolean) - в эфире ли сейчас
-- `channelCreated` (string) - дата создания канала (ISO)
-- `tags` (Array<string>) - теги канала
+Данные о пользователях, проводящих трансляции.
+* **id** (string/UUID) — уникальный идентификатор стримера.
+* **username** (string) — уникальное имя пользователя.
+* **category** (string) — текущая категория контента (например, "Just Chatting").
+* **followers** (number) — общее количество подписчиков канала.
+* **isLive** (boolean) — статус прямого эфира (true — в сети, false — офлайн).
+* **channelCreated** (string) — дата и время создания канала в формате ISO 8601.
+* **tags** (Array<string>) — список тегов, характеризующих трансляции (например, "RU", "EN").
 
 ### 6. Стримы (streams) - Twitch-like
-- `title` (string) - название стрима
-- `viewers` (number) - количество зрителей
-- `moderationEnabled` (boolean) - включена ли модерация
-- `startedAt` (string) - время начала стрима (ISO)
-- `moderators` (Array<string>) - список модераторов
-
+Данные о конкретных сессиях трансляций.
+* **id** (string) — уникальный идентификатор трансляции.
+* **title** (string) — название текущего или прошедшего стрима.
+* **viewers** (number) — текущее количество зрителей на трансляции.
+* **moderationEnabled** (boolean) — флаг использования инструментов автоматической модерации.
+* **moderators** (Array<string>) — список имен пользователей, имеющих права модератора.
+* **startedAt** (string) — время начала трансляции в формате ISO 8601.
 ## API Endpoints
 
 ### Основной маршрут
@@ -103,21 +106,6 @@
 - `PUT /streams/:id` - обновить стрим
 - `PATCH /streams/:id` - частично обновить стрим
 - `DELETE /streams/:id` - удалить стрим
-
-## Примеры запросов для новых сущностей
-
-### Создание стримера:
-```bash
-curl -X POST http://localhost:3000/streamers \
-  -H "Content-Type: application/json" \
-  -d '{
-    "username": "CoolStreamer",
-    "category": "Gaming",
-    "followers": 50000,
-    "isLive": true,
-    "channelCreated": "2020-03-15T00:00:00Z",
-    "tags": ["EN", "Gaming"]
-  }'
 
 
   
